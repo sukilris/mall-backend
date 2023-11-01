@@ -5,6 +5,7 @@ import { JwtModuleOptions } from "@nestjs/jwt";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { isNil } from "src/common/utils/tool";
 import { LoggerOptions } from "typeorm";
+import { TypeORMLogger } from '@/providers/typeorm-logger'
 
 @Injectable()
 export class AppConfigService {
@@ -92,6 +93,20 @@ export class AppConfigService {
             logging: loggerOptions,
             logger: new TypeORMLogger(loggerOptions),
             entities,
+        };
+    }
+
+    get swaggerConfig() {
+        return {
+            enable: this.get<boolean>('swagger.enable'),
+            path: this.get('swagger.path'),
+        };
+    }
+
+    get loggerConfig() {
+        return {
+            level: this.get('logger.level'),
+            maxFiles: this.get<number>('logger.maxFiles'),
         };
     }
 
