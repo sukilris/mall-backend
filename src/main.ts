@@ -6,6 +6,10 @@ import { AppLoggerService } from './shared/services/app-logger.service';
 import { BaseExceptionFilter } from './filters/base.filter';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { SharedModule } from './shared/shared.module';
+import { JwtService } from '@nestjs/jwt';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import { Authguard } from './guards/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {bufferLogs: true});
@@ -31,6 +35,10 @@ async function bootstrap() {
   // global guards
   const jwtService = app.select(SharedModule).get(JwtService);
   const redisService = app.get(RedisService);
+
+  app.useGlobalGuards(
+    new Authguard(reflector, jwtService, configService, redisService),
+  );
 
   await app.listen(3000);
 }
