@@ -34,7 +34,7 @@ export async function bootstrap() {
   );
 
   // global guards
-  const jwtService = app.select(SharedModule).get(JwtService);
+  const jwtService = app.select(SharedModule).get(JwtService); 
   const redisService = app.get(RedisService);
 
   app.useGlobalGuards(
@@ -64,7 +64,7 @@ export async function bootstrap() {
 
   // swagger document
   setupSwagger(app, configService);
-  console.log(port)
+
   await app.listen(port);
 
   // started log

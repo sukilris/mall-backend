@@ -20,7 +20,6 @@ export default () => {
   );
   if (existsSync(commonCfgPath))
     config = yaml.load(readFileSync(commonCfgPath, 'utf8'));
-
   // load config-${NODE_ENV}.yaml, like config-dev.yaml
   const envCfgPath = join(
     cwd,

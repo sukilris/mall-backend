@@ -44,7 +44,7 @@ export class AppConfigService {
             keyPrefix: `${this.appConfig.globalPrefix}:`,
             host: this.get('redis.host'),
             port: this.get<number>('redis.port'),
-            password: this.get('redis.password'),
+            // password: this.get('redis.password'),
             db: this.get<number>('redis.db'),
         };
     }
