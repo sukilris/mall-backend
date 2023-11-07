@@ -7,6 +7,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppConfigService } from './shared/services/app-config.service';
 import { SharedModule } from './shared/shared.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -32,7 +33,9 @@ import { SharedModule } from './shared/shared.module';
       },
       inject: [AppConfigService],
     }),
-    SharedModule
+    SharedModule,
+    // business module
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
