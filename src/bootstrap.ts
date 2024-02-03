@@ -1,19 +1,36 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
+import {
+  ExpressAdapter,
+  NestExpressApplication,
+} from '@nestjs/platform-express';
 import { AppConfigService } from './shared/services/app-config.service';
 import { AppLoggerService } from './shared/services/app-logger.service';
 import { BaseExceptionFilter } from './filters/base.filter';
-import { ClassSerializerInterceptor, HttpStatus, Logger, UnprocessableEntityException, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  HttpStatus,
+  Logger,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Authguard } from './guards/auth.guard';
 import { setupSwagger } from './setup-swagger';
+import type { Request } from 'express';
 
 export async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+    new ExpressAdapter(),
+    { bufferLogs: true },
+  );
+
+  const allowlist = ['http://localhost:3000'];
+  app.enableCors();
 
   // app config service
   const configService = app.get(AppConfigService);
@@ -34,7 +51,7 @@ export async function bootstrap() {
   );
 
   // global guards
-  const jwtService = app.select(SharedModule).get(JwtService); 
+  const jwtService = app.select(SharedModule).get(JwtService);
   const redisService = app.get(RedisService);
 
   app.useGlobalGuards(
@@ -71,5 +88,5 @@ export async function bootstrap() {
   const logger = new Logger('NestApplication');
   logger.log(`Server running on ${await app.getUrl()}`);
 
-  return app
+  return app;
 }
