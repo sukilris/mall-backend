@@ -12,10 +12,10 @@ import { ALLOW_ANON_PERMISSION_DECORATOR_KEY } from '@/decorators/allow-anon-per
 import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'lodash';
 import { AppConfigService } from '@/shared/services/app-config.service';
-import { RedisService } from '@liaoliaots/nestjs-redis';
 import { UserOnlineCachePrefix, UserPermCachePrefix } from '@/constants/cache';
 import { ApiFailedException } from '@/exceptions/api-failed.exception';
 import { ErrorEnum } from '@/constants/errorx';
+import { RedisService } from '@/modules/redis/redis.service';
 
 @Injectable()
 export class Authguard implements CanActivate {
@@ -55,9 +55,9 @@ export class Authguard implements CanActivate {
     }
 
     // check is expired
-    const cacheToken = await this.redisService
-      .getClient()
-      .get(`${UserOnlineCachePrefix}${request.authUser.uid}`);
+    const cacheToken = await this.redisService.get(
+      `${UserOnlineCachePrefix}${request.authUser.uid}`,
+    );
 
     if (isEmpty(cacheToken) || cacheToken !== token) {
       throw new UnauthorizedException();
@@ -72,9 +72,9 @@ export class Authguard implements CanActivate {
     if (isAllowAnonPermission) return true;
 
     // check current user have the operation permission
-    const permmenu = await this.redisService
-      .getClient()
-      .get(`${UserPermCachePrefix}${request.authUser.uid}`);
+    const permmenu = await this.redisService.get(
+      `${UserPermCachePrefix}${request.authUser.uid}`,
+    );
 
     if (isEmpty(permmenu)) {
       throw new ApiFailedException(ErrorEnum.CODE_1025);

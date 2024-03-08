@@ -1,7 +1,6 @@
 import type { SysRoleEntityTreeNode } from './user.interface';
 import type { IAuthUser } from '@/interfaces/auth';
 
-import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as SvgCaptcha from 'svg-captcha';
@@ -44,6 +43,7 @@ import { SysDictionaryEntity } from '@/entities/sys-dictionary.entity';
 import { CONFIG_SYS_CH_PWD, CONFIG_SYS_USERINFO } from '@/constants/core';
 import { SysRoleRepository } from '@/repositories/sys-role.repository';
 import { SysDeptRepository } from '@/repositories/sys-dept.repository';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService extends AbstractService {
@@ -76,14 +76,11 @@ export class UserService extends AbstractService {
       buildShortUUID(),
     );
 
-    await this.redisService
-      .getClient()
-      .set(
-        `${UserLoginCaptchaCachePrefix}${captcha.captchaId}`,
-        svg.text.toLowerCase(),
-        'EX',
-        60 * 5,
-      );
+    await this.redisService.set(
+      `${UserLoginCaptchaCachePrefix}${captcha.captchaId}`,
+      svg.text.toLowerCase(),
+      60 * 5,
+    );
 
     return captcha;
   }
@@ -95,7 +92,7 @@ export class UserService extends AbstractService {
   ): Promise<UserLoginRespDto> {
     // 检查验证码是否正确
     const captchaKey = `${UserLoginCaptchaCachePrefix}${dto.captchaId}`;
-    const captcha = await this.redisService.getClient().get(captchaKey);
+    const captcha = await this.redisService.get(captchaKey);
     if (isEmpty(captcha) || dto.verifyCode !== captcha) {
       throw new ApiFailedException(ErrorEnum.CODE_1021);
     }
@@ -137,9 +134,11 @@ export class UserService extends AbstractService {
     const onlineKey = `${UserOnlineCachePrefix}${user.id}`;
 
     // 设置Redis过期时间
-    await this.redisService
-      .getClient()
-      .set(onlineKey, token, 'EX', this.configService.jwtConfig.expires);
+    await this.redisService.set(
+      onlineKey,
+      token,
+      this.configService.jwtConfig.expires,
+    );
 
     // 保存登录日志
     await this.entityManager.insert(SysLogEntity, {
@@ -155,9 +154,7 @@ export class UserService extends AbstractService {
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {
-    const token = await this.redisService
-      .getClient()
-      .get(`${UserOnlineCachePrefix}${uid}`);
+    const token = await this.redisService.get(`${UserOnlineCachePrefix}${uid}`);
 
     if (isEmpty(token)) {
       throw new ApiFailedException(ErrorEnum.CODE_1026);
@@ -177,9 +174,10 @@ export class UserService extends AbstractService {
 
       // 缓存权限用于权限中间件
       const result = this.splitPermAndMenu(pms);
-      await this.redisService
-        .getClient()
-        .set(`${UserPermCachePrefix}${user.id}`, JSON.stringify(result.perms));
+      await this.redisService.set(
+        `${UserPermCachePrefix}${user.id}`,
+        JSON.stringify(result.perms),
+      );
       return result;
     }
 
@@ -218,9 +216,10 @@ export class UserService extends AbstractService {
 
     // 缓存权限
     const result = this.splitPermAndMenu(pms);
-    await this.redisService
-      .getClient()
-      .set(`${UserPermCachePrefix}${user.id}`, JSON.stringify(result.perms));
+    await this.redisService.set(
+      `${UserPermCachePrefix}${user.id}`,
+      JSON.stringify(result.perms),
+    );
     return result;
   }
 
@@ -250,7 +249,7 @@ export class UserService extends AbstractService {
       (e) => `${e}${uid}`,
     );
 
-    await this.redisService.getClient().del(keys);
+    await this.redisService.del(keys);
   }
 
   async getUserProfileInfo(uid: number): Promise<UserProfileInfoRespDto> {

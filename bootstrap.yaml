@@ -21,16 +21,17 @@ jwt:
   expires: 86400
 
 redis:
-  host: 127.0.0.1
+  host: 52.36.37.4
   port: 6379
+  password: 314159
   db: 0
 
 db:
-  host: 127.0.0.1
+  host: 52.36.37.4
   port: 3306
   username: root
-  password: "314159"
-  database: mall
+  password: '314159'
+  database: mall-test
   logging: true
 
 swagger:

@@ -17,10 +17,10 @@ import {
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { JwtService } from '@nestjs/jwt';
-import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Authguard } from './guards/auth.guard';
 import { setupSwagger } from './setup-swagger';
 import type { Request } from 'express';
+import { RedisService } from './modules/redis/redis.service';
 
 export async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
