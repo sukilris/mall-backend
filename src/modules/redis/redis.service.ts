@@ -1,6 +1,6 @@
-import { RedisClinet } from '@/constants/redis';
 import { Inject, Injectable } from '@nestjs/common';
 import { Redis, RedisKey } from 'ioredis';
+import { RedisClinet } from './redis.constants';
 
 @Injectable()
 export class RedisService {

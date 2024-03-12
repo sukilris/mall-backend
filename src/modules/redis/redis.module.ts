@@ -2,7 +2,7 @@ import { AppConfigService } from '@/shared/services/app-config.service';
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RedisService } from './redis.service';
-import { RedisClinet } from '@/constants/redis';
+import { RedisClinet } from './redis.constants';
 
 @Global()
 @Module({})
