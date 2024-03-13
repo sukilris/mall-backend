@@ -11,6 +11,10 @@ import {
   UserPermMenuRespDto,
   UserProfileInfoRespDto,
   UserProfileUpdateReqDto,
+  UserRegisterCaptchaReqDto,
+  UserRegisterCaptchaRespDto,
+  UserRegisterReqDto,
+  UserRegisterRespDto,
 } from './user.dto';
 import { UserService } from './user.service';
 import { wrapResponse } from '@/common/utils/swagger';
@@ -49,6 +53,35 @@ export class UserController {
     @Uri() uri: string,
   ) {
     return await this.userService.createLoginToken(body, ip, uri);
+  }
+
+  @Get('register/captcha')
+  @SkipAuth()
+  @ApiOkResponse({
+    type: wrapResponse({
+      type: UserRegisterCaptchaRespDto,
+    }),
+  })
+  async registerCaptcha(@Query() query: UserRegisterCaptchaReqDto) {
+    return await this.userService.createRegisterCaptcha(
+      query.width,
+      query.height,
+    );
+  }
+
+  @Post('register')
+  @SkipAuth()
+  @ApiOkResponse({
+    type: wrapResponse({
+      type: UserRegisterRespDto,
+    }),
+  })
+  async register(
+    @Body() body: UserRegisterReqDto,
+    @Ip() ip: string,
+    @Uri() uri: string,
+  ) {
+    return await this.userService.register(body, ip, uri);
   }
 
   @Get('permmenu')

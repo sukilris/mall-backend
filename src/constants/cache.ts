@@ -4,3 +4,5 @@ export const UserOnlineCachePrefix = 'user:online:';
 export const UserPermCachePrefix = 'user:perm:';
 // login captcha cache by captcha id
 export const UserLoginCaptchaCachePrefix = 'user:login:captcha:';
+// login captcha cache by captcha id
+export const UserRegisterCaptchaCachePrefix = 'user:register:captcha:';

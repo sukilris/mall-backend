@@ -9,6 +9,7 @@ import {
   UserLoginCaptchaCachePrefix,
   UserOnlineCachePrefix,
   UserPermCachePrefix,
+  UserRegisterCaptchaCachePrefix,
 } from '@/constants/cache';
 import { AbstractService } from '@/common/abstract.service';
 import {
@@ -22,6 +23,8 @@ import {
   UserPermRespItemDto,
   UserProfileInfoRespDto,
   UserProfileUpdateReqDto,
+  UserRegisterCaptchaRespDto,
+  UserRegisterReqDto,
 } from './user.dto';
 import { AppConfigService } from '@/shared/services/app-config.service';
 import { isEmpty, omit, uniq } from 'lodash';
@@ -78,6 +81,33 @@ export class UserService extends AbstractService {
 
     await this.redisService.set(
       `${UserLoginCaptchaCachePrefix}${captcha.captchaId}`,
+      svg.text.toLowerCase(),
+      60 * 5,
+    );
+
+    return captcha;
+  }
+
+  async createRegisterCaptcha(
+    width?: number,
+    height?: number,
+  ): Promise<UserRegisterCaptchaRespDto> {
+    const svg = SvgCaptcha.create({
+      color: true,
+      size: 4,
+      noise: 4,
+      width: width ?? 100,
+      height: height ?? 40,
+      charPreset: '1234567890',
+    });
+
+    const captcha = new UserRegisterCaptchaRespDto(
+      `data:image/svg+xml;base64,${Buffer.from(svg.data).toString('base64')}`,
+      buildShortUUID(),
+    );
+
+    await this.redisService.set(
+      `${UserRegisterCaptchaCachePrefix}${captcha.captchaId}`,
       svg.text.toLowerCase(),
       60 * 5,
     );
@@ -151,6 +181,15 @@ export class UserService extends AbstractService {
     });
 
     return new UserLoginRespDto(token);
+  }
+
+  async register(dto: UserRegisterReqDto, ip: string, uri: string) {
+    // 检查验证码是否正确
+    const captchaKey = `${UserRegisterCaptchaCachePrefix}${dto.captchaId}`;
+    const captcha = await this.redisService.get(captchaKey);
+    if (isEmpty(captcha) || dto.verifyCode !== captcha) {
+      throw new ApiFailedException(ErrorEnum.CODE_1021);
+    }
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {

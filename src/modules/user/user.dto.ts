@@ -14,7 +14,35 @@ export class UserLoginCaptchaReqDto {
   height?: number;
 }
 
+export class UserRegisterCaptchaReqDto {
+  @NumberField({
+    required: false,
+  })
+  width?: number;
+
+  @NumberField({
+    required: false,
+  })
+  height?: number;
+}
+
 export class UserLoginReqDto {
+  @StringField()
+  captchaId: string;
+
+  @StringField({
+    lowerCase: true,
+  })
+  verifyCode: string;
+
+  @StringField()
+  account: string;
+
+  @StringField()
+  password: string;
+}
+
+export class UserRegisterReqDto {
   @StringField()
   captchaId: string;
 
@@ -114,7 +142,25 @@ export class UserLoginCaptchaRespDto {
   }
 }
 
+export class UserRegisterCaptchaRespDto {
+  verifyCode: string;
+  captchaId: string;
+
+  constructor(verifyCode: string, captchaId: string) {
+    this.verifyCode = verifyCode;
+    this.captchaId = captchaId;
+  }
+}
+
 export class UserLoginRespDto {
+  token: string;
+
+  constructor(token: string) {
+    this.token = token;
+  }
+}
+
+export class UserRegisterRespDto {
   token: string;
 
   constructor(token: string) {
