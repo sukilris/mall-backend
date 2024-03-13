@@ -65,7 +65,7 @@ export class SysUserEntity extends AbstractEntity {
     width: 1,
     unsigned: true,
     default: 1,
-    comment: '状态: 0=禁用 1=开启',
+    comment: '状态: 0=禁用 1=开启 2=待审核',
   })
   status: number;
 

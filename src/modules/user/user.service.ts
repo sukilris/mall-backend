@@ -190,6 +190,14 @@ export class UserService extends AbstractService {
     if (isEmpty(captcha) || dto.verifyCode !== captcha) {
       throw new ApiFailedException(ErrorEnum.CODE_1021);
     }
+    // 查找用户账户
+    const user = await this.entityManager.findOne(SysUserEntity, {
+      select: ['account', 'password', 'id', 'status', 'deptId'],
+      where: { account: dto.account },
+    });
+    if (user) {
+      throw new ApiFailedException(ErrorEnum.CODE_1029);
+    }
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {
