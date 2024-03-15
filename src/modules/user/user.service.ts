@@ -185,11 +185,11 @@ export class UserService extends AbstractService {
 
   async register(dto: UserRegisterReqDto, ip: string, uri: string) {
     // 检查验证码是否正确
-    const captchaKey = `${UserRegisterCaptchaCachePrefix}${dto.captchaId}`;
-    const captcha = await this.redisService.get(captchaKey);
-    if (isEmpty(captcha) || dto.verifyCode !== captcha) {
-      throw new ApiFailedException(ErrorEnum.CODE_1021);
-    }
+    // const captchaKey = `${UserRegisterCaptchaCachePrefix}${dto.captchaId}`;
+    // const captcha = await this.redisService.get(captchaKey);
+    // if (isEmpty(captcha) || dto.verifyCode !== captcha) {
+    //   throw new ApiFailedException(ErrorEnum.CODE_1021);
+    // }
     // 查找用户账户
     const user = await this.entityManager.findOne(SysUserEntity, {
       select: ['account', 'password', 'id', 'status', 'deptId'],
@@ -198,6 +198,10 @@ export class UserService extends AbstractService {
     if (user) {
       throw new ApiFailedException(ErrorEnum.CODE_1029);
     }
+    await this.entityManager.insert(SysUserEntity, {
+      account: dto.account,
+      password: this.generalService.generateUserPassword(dto.password),
+    });
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {

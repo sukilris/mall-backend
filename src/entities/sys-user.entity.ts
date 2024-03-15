@@ -57,7 +57,7 @@ export class SysUserEntity extends AbstractEntity {
   })
   deptId: number;
 
-  @Column({ name: 'role_ids', type: 'simple-json', comment: '角色集' })
+  @Column({ name: 'role_ids', type: 'simple-j', comment: '角色集' })
   roleIds: number[];
 
   @Column({
@@ -65,7 +65,7 @@ export class SysUserEntity extends AbstractEntity {
     width: 1,
     unsigned: true,
     default: 1,
-    comment: '状态: 0=禁用 1=开启 2=待审核',
+    comment: '状态: 0=禁用 1=开启',
   })
   status: number;
 
