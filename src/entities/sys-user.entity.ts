@@ -27,7 +27,7 @@ export class SysUserEntity extends AbstractEntity {
   })
   gender: number;
 
-  @Column({ type: 'varchar', length: 50, default: '', comment: '邮件' })
+  @Column({ type: 'varchar', length: 50, default: '', comment: '邮箱' })
   email: string;
 
   @Column({ type: 'char', length: 11, default: '', comment: '手机号' })
@@ -57,7 +57,7 @@ export class SysUserEntity extends AbstractEntity {
   })
   deptId: number;
 
-  @Column({ name: 'role_ids', type: 'simple-j', comment: '角色集' })
+  @Column({ name: 'role_ids', type: 'simple-json', comment: '角色集' })
   roleIds: number[];
 
   @Column({

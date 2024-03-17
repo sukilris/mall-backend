@@ -198,10 +198,12 @@ export class UserService extends AbstractService {
     if (user) {
       throw new ApiFailedException(ErrorEnum.CODE_1029);
     }
-    await this.entityManager.insert(SysUserEntity, {
+    const res = await this.entityManager.insert(SysUserEntity, {
       account: dto.account,
       password: this.generalService.generateUserPassword(dto.password),
     });
+
+    return res;
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {
