@@ -19,3 +19,16 @@ CREATE TABLE `sys_user` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
+
+CREATE TABLE `sys_log` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int unsigned NOT NULL COMMENT '用户ID',
+  `ip` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ip',
+  `uri` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求路径',
+  `type` tinyint unsigned NOT NULL COMMENT '类型: 1=登录日志 2=操作日志',
+  `request` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '请求数据',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态: 0=失败 1=成功',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统日志';

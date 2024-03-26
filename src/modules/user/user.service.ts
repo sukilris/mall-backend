@@ -198,12 +198,34 @@ export class UserService extends AbstractService {
     if (user) {
       throw new ApiFailedException(ErrorEnum.CODE_1029);
     }
-    const res = await this.entityManager.insert(SysUserEntity, {
+    const insertResult = await this.entityManager.insert(SysUserEntity, {
       account: dto.account,
       password: this.generalService.generateUserPassword(dto.password),
     });
+    // 生成JWT Token
+    const userId = insertResult.identifiers[0].id;
+    const payload: IAuthUser = { uid: userId };
+    const token = this.jwtService.sign(payload);
+    const onlineKey = `${UserOnlineCachePrefix}${userId}`;
 
-    return res;
+    // 设置Redis过期时间
+    await this.redisService.set(
+      onlineKey,
+      token,
+      this.configService.jwtConfig.expires,
+    );
+
+    // 保存登录日志
+    await this.entityManager.insert(SysLogEntity, {
+      userId,
+      status: StatusTypeEnum.Successful,
+      type: SysLogTypeEnum.Login,
+      ip,
+      uri,
+      request: JSON.stringify(omit(dto, 'password')),
+    });
+
+    return new UserLoginRespDto(token);
   }
 
   async getUserPermMenu(uid: number): Promise<UserPermMenuRespDto> {

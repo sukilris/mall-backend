@@ -21,13 +21,13 @@ jwt:
   expires: 86400
 
 redis:
-  host: 52.36.37.4
+  host: 34.217.47.15
   port: 6379
   password: 314159
   db: 0
 
 db:
-  host: 52.36.37.4
+  host: 34.217.47.15
   port: 3306
   username: root
   password: '314159'
