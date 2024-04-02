@@ -1,3 +1,5 @@
+import './polyfill';
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,6 +10,7 @@ import { AppConfigService } from './shared/services/app-config.service';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './modules/user/user.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { SystemModule } from './modules/system/system.module';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { RedisModule } from './modules/redis/redis.module';
     SharedModule,
     // business module
     UserModule,
+    SystemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -64,30 +64,30 @@ export class Authguard implements CanActivate {
     }
 
     // use the @AllowAnonPermission() decorator to allow operate
-    const isAllowAnonPermission = this.reflector.getAllAndOverride<boolean>(
-      ALLOW_ANON_PERMISSION_DECORATOR_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    // const isAllowAnonPermission = this.reflector.getAllAndOverride<boolean>(
+    //   ALLOW_ANON_PERMISSION_DECORATOR_KEY,
+    //   [context.getHandler(), context.getClass()],
+    // );
 
-    if (isAllowAnonPermission) return true;
+    // if (isAllowAnonPermission) return true;
 
-    // check current user have the operation permission
-    const permmenu = await this.redisService.get(
-      `${UserPermCachePrefix}${request.authUser.uid}`,
-    );
+    // // check current user have the operation permission
+    // const permmenu = await this.redisService.get(
+    //   `${UserPermCachePrefix}${request.authUser.uid}`,
+    // );
 
-    if (isEmpty(permmenu)) {
-      throw new ApiFailedException(ErrorEnum.CODE_1025);
-    }
+    // if (isEmpty(permmenu)) {
+    //   throw new ApiFailedException(ErrorEnum.CODE_1025);
+    // }
 
-    const path = request.path;
-    const permmenuArr: string[] = JSON.parse(permmenu);
-    const prefixUrl = `/${this.configService.appConfig.globalPrefix}`;
-    const reg = new RegExp(`^${prefixUrl}`);
+    // const path = request.path;
+    // const permmenuArr: string[] = JSON.parse(permmenu);
+    // const prefixUrl = `/${this.configService.appConfig.globalPrefix}`;
+    // const reg = new RegExp(`^${prefixUrl}`);
 
-    if (!permmenuArr.includes(path.replace(reg, ''))) {
-      throw new ApiFailedException(ErrorEnum.CODE_1025);
-    }
+    // if (!permmenuArr.includes(path.replace(reg, ''))) {
+    //   throw new ApiFailedException(ErrorEnum.CODE_1025);
+    // }
 
     // can active
     return true;

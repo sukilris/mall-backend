@@ -1,3 +1,4 @@
+import { NumberField } from '@/decorators/field.decorator';
 import { SysPermMenuEntity } from '@/entities/sys-perm-menu.entity';
 
 export class SysPermMenuItemRespDto {
@@ -26,4 +27,12 @@ export class SysPermMenuItemRespDto {
     this.type = entity.type;
     this.viewPath = entity.viewPath;
   }
+}
+
+export class SysPermMenuDeleteReqDto {
+  @NumberField({
+    int: true,
+    min: 1,
+  })
+  id: number;
 }
