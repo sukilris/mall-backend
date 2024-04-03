@@ -6,6 +6,8 @@ import { wrapResponse } from '@/common/utils/swagger';
 import {
   SysPermMenuItemRespDto,
   SysPermMenuDeleteReqDto,
+  SysPermMenuAddReqDto,
+  SysPermMenuUpdateReqDto,
 } from './permmenu.dto';
 
 @ApiTags('System permission and menu - 系统权限及菜单')
@@ -24,7 +26,18 @@ export class SystemPermenuController {
   async list() {
     return await this.pmService.getPermmenuList();
   }
-
+  @Post('add')
+  @ApiOkResponse({ type: wrapResponse() })
+  async add(@Body() body: SysPermMenuAddReqDto) {
+    await this.pmService.addPermMenu(body);
+  }
+  @Post('update')
+  @ApiOkResponse({
+    type: wrapResponse(),
+  })
+  async update(@Body() body: SysPermMenuUpdateReqDto) {
+    await this.pmService.updatePermMenu(body);
+  }
   @Post('delete')
   @ApiOkResponse({
     type: wrapResponse(),

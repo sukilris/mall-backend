@@ -1,5 +1,7 @@
-import { NumberField } from '@/decorators/field.decorator';
+import { SysMenuTypeEnum } from '@/constants/type';
+import { NumberField, StringField } from '@/decorators/field.decorator';
 import { SysPermMenuEntity } from '@/entities/sys-perm-menu.entity';
+import { ArrayNotEmpty, ValidateIf } from 'class-validator';
 
 export class SysPermMenuItemRespDto {
   activeRouter: string;
@@ -27,6 +29,61 @@ export class SysPermMenuItemRespDto {
     this.type = entity.type;
     this.viewPath = entity.viewPath;
   }
+}
+
+export class SysPermMenuAddReqDto {
+  @NumberField({
+    int: true,
+    min: 0,
+    max: 2,
+  })
+  type: number;
+  @StringField({
+    required: false,
+  })
+  icon?: string;
+  @NumberField({
+    int: true,
+    min: 0,
+    max: 1,
+  })
+  @ValidateIf((o) => o.type !== SysMenuTypeEnum.Permission)
+  isShow: number;
+  @StringField({
+    minLength: 2,
+    maxLength: 50,
+  })
+  name: string;
+  @NumberField({
+    required: false,
+  })
+  orderNum?: number;
+  @NumberField({
+    int: true,
+    min: 0,
+  })
+  parentId: number;
+  @StringField({
+    each: true,
+  })
+  @ArrayNotEmpty()
+  @ValidateIf((o) => o.type === SysMenuTypeEnum.Permission)
+  perms: string[];
+  @StringField()
+  @ValidateIf((o) => o.type !== SysMenuTypeEnum.Permission)
+  router: string;
+  @StringField({ required: false })
+  viewPath: string;
+  @StringField({ required: false })
+  activeRouter?: string;
+}
+
+export class SysPermMenuUpdateReqDto extends SysPermMenuAddReqDto {
+  @NumberField({
+    int: true,
+    min: 1,
+  })
+  id: number;
 }
 
 export class SysPermMenuDeleteReqDto {
