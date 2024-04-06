@@ -53,9 +53,9 @@ export class SystemPermenuService extends AbstractService {
 
   async deletePermMenu(item: SysPermMenuDeleteReqDto) {
     // 检查是否为保护的保护的菜单ID
-    if (item.id < this.configService.appConfig.protectSysPermMenuMaxId) {
-      throw new ApiFailedException(ErrorEnum.CODE_1112);
-    }
+    // if (item.id < this.configService.appConfig.protectSysPermMenuMaxId) {
+    //   throw new ApiFailedException(ErrorEnum.CODE_1112);
+    // }
     // 检查是否有含有子项
     const count = await this.entityManager.count(SysPermMenuEntity, {
       where: {
@@ -70,9 +70,9 @@ export class SystemPermenuService extends AbstractService {
     });
   }
   async updatePermMenu(item: SysPermMenuUpdateReqDto): Promise<void> {
-    if (item.id <= this.configService.appConfig.protectSysPermMenuMaxId) {
-      throw new ApiFailedException(ErrorEnum.CODE_1112);
-    }
+    // if (item.id <= this.configService.appConfig.protectSysPermMenuMaxId) {
+    //   throw new ApiFailedException(ErrorEnum.CODE_1112);
+    // }
     if (item.id === item.parentId) {
       throw new ApiFailedException(ErrorEnum.CODE_1115);
     }
