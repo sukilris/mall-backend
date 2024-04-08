@@ -10,5 +10,7 @@ import { PageOptionsDto } from '@/common/dtos/page-options.dto';
 export class SystemUserController {
   constructor(private readonly userService: SystemUserService) {}
 
-  async page(@Query() query: PageOptionsDto) {}
+  async page(@Query() query: PageOptionsDto) {
+    return this.userService.getUserByPage(query.page, query.limit);
+  }
 }

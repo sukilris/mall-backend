@@ -9,11 +9,18 @@ export class SystemUserService extends AbstractService {
   constructor(private readonly configService: AppConfigService) {
     super();
   }
-  async getUserByPage() {
-    const rows = await this.entityManager.find(SysUserEntity, {
+  async getUserByPage(page: number, limit: number) {
+    const options = {
       where: {
         id: Not(this.configService.appConfig.rootUserId),
       },
-    });
+      skip: (page - 1) * limit,
+      take: limit,
+    };
+    const rows = await this.entityManager.find(SysUserEntity, options);
+
+    const count = await this.entityManager.count(SysUserEntity, options);
+
+    return rows.toPage({ page, limit, total: count });
   }
 }
