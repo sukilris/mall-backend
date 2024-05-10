@@ -8,6 +8,7 @@ import {
   SysUserAddReqDto,
   SysUserDeleteReqDto,
   SysUserPageItemRespDto,
+  SysUserUpdateReqDto,
 } from './user.dto';
 
 @ApiTags('System user - 系统用户')
@@ -35,5 +36,19 @@ export class SystemUserController {
     await this.userService.deleteUser(body.id);
   }
 
-  async add(@Body() body: SysUserAddReqDto) {}
+  @Post('add')
+  @ApiOkResponse({
+    type: wrapResponse(),
+  })
+  async add(@Body() body: SysUserAddReqDto) {
+    await this.userService.addUser(body);
+  }
+
+  @Post('update')
+  @ApiOkResponse({
+    type: wrapResponse(),
+  })
+  async update(body: SysUserUpdateReqDto) {
+    await this.userService.updateUser(body);
+  }
 }

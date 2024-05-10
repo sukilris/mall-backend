@@ -1,5 +1,6 @@
 import { NumberField, StringField } from '@/decorators/field.decorator';
 import { ISysUserPagingQueryItem } from '@/interfaces/respository';
+import { OmitType } from '@nestjs/swagger';
 
 export class SysUserPageItemRespDto {
   id: number;
@@ -80,4 +81,11 @@ export class SysUserAddReqDto {
   status: number;
   @StringField()
   username: string;
+}
+
+export class SysUserUpdateReqDto extends OmitType(SysUserAddReqDto, [
+  'account',
+]) {
+  @NumberField({ int: true, min: 1 })
+  id: number;
 }

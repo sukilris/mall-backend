@@ -4,6 +4,8 @@ import { AppConfigService } from '@/shared/services/app-config.service';
 import { AppGeneralService } from '@/shared/services/app-general.service';
 import { Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
+import { SysUserAddReqDto, SysUserUpdateReqDto } from './user.dto';
+import { omit, uniq } from 'lodash';
 
 @Injectable()
 export class SystemUserService extends AbstractService {
@@ -34,5 +36,24 @@ export class SystemUserService extends AbstractService {
     }
 
     await this.entityManager.delete(SysUserEntity, { id: uid });
+  }
+
+  async addUser(item: SysUserAddReqDto): Promise<void> {
+    await this.entityManager.insert(SysUserEntity, {
+      ...omit(item, 'roleIds'),
+      roleIds: uniq(item.roleIds),
+      password: this.generalService.generateUserPassword(),
+    });
+  }
+
+  async updateUser(item: SysUserUpdateReqDto): Promise<void> {
+    await this.entityManager.update(
+      SysUserEntity,
+      { id: item.id },
+      {
+        ...omit(item, ['roleIds', 'id']),
+        roleIds: uniq(item.roleIds),
+      },
+    );
   }
 }
