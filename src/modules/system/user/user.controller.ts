@@ -48,7 +48,7 @@ export class SystemUserController {
   @ApiOkResponse({
     type: wrapResponse(),
   })
-  async update(body: SysUserUpdateReqDto) {
+  async update(@Body() body: SysUserUpdateReqDto) {
     await this.userService.updateUser(body);
   }
 }
