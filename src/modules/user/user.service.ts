@@ -151,11 +151,11 @@ export class UserService extends AbstractService {
       }
 
       // 部门被禁用时无法使用
-      const deptEnable = await this.sysDeptRepo.findDeptEnableByid(user.deptId);
+      // const deptEnable = await this.sysDeptRepo.findDeptEnableByid(user.deptId);
 
-      if (!deptEnable) {
-        throw new ApiFailedException(ErrorEnum.CODE_1024);
-      }
+      // if (!deptEnable) {
+      //   throw new ApiFailedException(ErrorEnum.CODE_1024);
+      // }
     }
 
     // 生成JWT Token
