@@ -75,7 +75,6 @@ export class Authguard implements CanActivate {
     const permmenu = await this.redisService.get(
       `${UserPermCachePrefix}${request.authUser.uid}`,
     );
-
     if (isEmpty(permmenu)) {
       throw new ApiFailedException(ErrorEnum.CODE_1025);
     }
