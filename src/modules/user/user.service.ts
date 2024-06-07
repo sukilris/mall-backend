@@ -256,7 +256,9 @@ export class UserService extends AbstractService {
       return result;
     }
 
-    const allSubRoles = await this.sysRoleRepo.findAllEnableIds(user.roleIds);
+    const allSubRoles = await this.sysRoleRepo.findAllEnableIds(
+      user.roleIds || [],
+    );
 
     // 查找相关的角色信息
     const roles = await this.entityManager.find<SysRoleEntityTreeNode>(
